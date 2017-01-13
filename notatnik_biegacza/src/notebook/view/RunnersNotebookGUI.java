@@ -3,7 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package notebook;
+package notebook.view;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import notebook.model.ListOfRuns;
 
 /**
  *
@@ -16,6 +21,21 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
      */
     public RunnersNotebookGUI() {
         initComponents();
+        
+        ListOfRuns list = new ListOfRuns();
+        
+        try {
+            //load list of runs from file
+            list.load();
+        } catch (IOException ex) {
+            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
+        
+        jScrollPane1 = new javax.swing.JScrollPane(runsList);
     }
 
     /**
@@ -38,6 +58,12 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         addRunButton = new javax.swing.JButton();
         editRunButton = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        progressTextArea = new javax.swing.JTextArea();
+        displayStatisticsButton = new javax.swing.JButton();
+        maxHeartRateTextField = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Notatnik biegacza rekreacyjnego");
@@ -51,6 +77,11 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel1.setText("Lista biegów");
 
         ageTextField.setEditable(false);
+        ageTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ageTextFieldActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Wiek");
 
@@ -69,9 +100,24 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Informacje o biegaczu");
 
-        addRunButton.setText("Dodaj bieg");
+        addRunButton.setText("Dodaj ostatni bieg");
 
         editRunButton.setText("Edytuj wybrany bieg");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel5.setText("Marker postępów");
+
+        progressTextArea.setEditable(false);
+        progressTextArea.setColumns(20);
+        progressTextArea.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        progressTextArea.setRows(5);
+        jScrollPane2.setViewportView(progressTextArea);
+
+        displayStatisticsButton.setText("Wyświetl statystyki");
+
+        maxHeartRateTextField.setEditable(false);
+
+        jLabel6.setText("Tętno maksymalne");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,16 +135,23 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(ageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2))
-                                .addGap(51, 51, 51)
+                                .addGap(30, 30, 30)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(weightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(weightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(changeInfoButton)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(displayStatisticsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(addRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addComponent(jLabel1))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addGap(36, 36, 36))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,21 +159,29 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                 .addContainerGap(37, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addRunButton)
                         .addGap(18, 18, 18)
                         .addComponent(editRunButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
                         .addGap(18, 18, 18)
+                        .addComponent(displayStatisticsButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(weightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(weightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(changeInfoButton))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -133,6 +194,10 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private void weightTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weightTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_weightTextFieldActionPerformed
+
+    private void ageTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ageTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ageTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -160,6 +225,8 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(RunnersNotebookGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //new setList();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -168,17 +235,41 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             }
         });
     }
-
+    
+//    public void setList(){
+//        ListOfRuns list = new ListOfRuns();
+//        
+//        try {
+//            //load list of runs from file
+//            list.load();
+//        } catch (IOException ex) {
+//            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
+//        
+//        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+//        
+//    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addRunButton;
     private javax.swing.JTextField ageTextField;
     private javax.swing.JButton changeInfoButton;
+    private javax.swing.JButton displayStatisticsButton;
     private javax.swing.JButton editRunButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField maxHeartRateTextField;
+    private javax.swing.JTextArea progressTextArea;
     private javax.swing.JList runsList;
     private javax.swing.JTextField weightTextField;
     // End of variables declaration//GEN-END:variables
