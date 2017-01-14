@@ -23,6 +23,7 @@ public class Run implements Serializable{
     double maxHR;
     Date date;
     Duration time;
+    double ratio;
     
     
     public Run(double dis, double a, double m, String d, String t) throws ParseException{
@@ -31,6 +32,7 @@ public class Run implements Serializable{
         maxHR = m;
         date = new SimpleDateFormat("dd/MM/yyyy").parse(d);
         time = Duration.parse(t);
+        ratio = dis / a; //consider changing to speed / avgHR
     }
     
     public double getDistance(){
@@ -75,6 +77,10 @@ public class Run implements Serializable{
     
     public void setTime(String t){
         time = Duration.parse(t);
+    }
+    
+    public void countRatio(){
+        ratio = distance / avgHR;
     }
     
     @Override
