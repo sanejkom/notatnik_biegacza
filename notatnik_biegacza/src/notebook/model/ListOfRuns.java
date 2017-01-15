@@ -32,7 +32,7 @@ public class ListOfRuns {
 
     //load list of runs from a file
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream("t.tmp");
+        FileInputStream fis = new FileInputStream("list.tmp");
         ObjectInputStream ois = new ObjectInputStream(fis);
         list = (ArrayList<Run>) ois.readObject();
         ois.close();
@@ -40,7 +40,7 @@ public class ListOfRuns {
 
     //save list of runs to a file
     public void save() throws FileNotFoundException, IOException {
-        FileOutputStream fos = new FileOutputStream("t.tmp");
+        FileOutputStream fos = new FileOutputStream("list.tmp");
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(list);
         oos.close();

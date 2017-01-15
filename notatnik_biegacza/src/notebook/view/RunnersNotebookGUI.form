@@ -166,6 +166,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Edytuj informacje"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="changeInfoButtonMouseReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>

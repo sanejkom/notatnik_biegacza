@@ -8,7 +8,13 @@ package notebook.view;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import notebook.model.ListOfRuns;
+import notebook.model.User;
 
 /**
  *
@@ -21,9 +27,18 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
      */
     public RunnersNotebookGUI() {
         initComponents();
-        
+
         ListOfRuns list = new ListOfRuns();
-        
+        user = new User();
+        try {
+            user.load();
+            updateUser();
+        } catch (IOException ex) {
+            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         try {
             //load list of runs from file
             list.load();
@@ -32,9 +47,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
-        
+
         jScrollPane1 = new javax.swing.JScrollPane(runsList);
     }
 
@@ -96,6 +111,11 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel3.setText("Masa ciała");
 
         changeInfoButton.setText("Edytuj informacje");
+        changeInfoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                changeInfoButtonMouseReleased(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Informacje o biegaczu");
@@ -199,6 +219,49 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ageTextFieldActionPerformed
 
+    private void changeInfoButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeInfoButtonMouseReleased
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                //new EditInformationGUI().setVisible(true);
+//                EditInformationGUI edit = new EditInformationGUI();
+//                edit.setVisible(true);
+//                User newUser = edit.updateUser();
+//                
+//                System.out.println(newUser.getAge() + " " + newUser.getWeight());
+//            }
+//        });
+        JTextField ageEdit = new JTextField();
+        JTextField weightEdit = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Wiek"),
+            ageEdit,
+            new JLabel("Masa ciała"),
+            weightEdit
+        };
+        int result = JOptionPane.showConfirmDialog(null, inputs, "My custom dialog", JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + ageEdit.getText() + ", "
+                    + weightEdit.getText());
+            int a = Integer.parseInt(ageEdit.getText());
+            double w = Double.parseDouble(weightEdit.getText());
+            System.out.println(user.toString());
+            user.setAge(a);
+            user.setWeight(w);
+            user.countMaxHR();
+            try {
+                user.save();
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            updateUser();
+//            ageTextField.setText(ageEdit.getText());
+//            weightTextField.setText(weightEdit.getText());
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_changeInfoButtonMouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -225,7 +288,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(RunnersNotebookGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //new setList();
 
         /* Create and display the form */
@@ -235,7 +298,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             }
         });
     }
-    
+
 //    public void setList(){
 //        ListOfRuns list = new ListOfRuns();
 //        
@@ -253,7 +316,16 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
 //        jScrollPane1 = new javax.swing.JScrollPane(runsList);
 //        
 //    }
-    
+    public void updateUser() {
+        String a = "" + user.getAge();
+        String w = "" + user.getWeight();
+        String h = "" + user.getMaxHR();
+
+        ageTextField.setText(a);
+        weightTextField.setText(w);
+        maxHeartRateTextField.setText(h);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addRunButton;
     private javax.swing.JTextField ageTextField;
@@ -273,4 +345,6 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private javax.swing.JList runsList;
     private javax.swing.JTextField weightTextField;
     // End of variables declaration//GEN-END:variables
+    public User user;
+
 }
