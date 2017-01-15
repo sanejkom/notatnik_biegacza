@@ -29,6 +29,10 @@ public class ListOfRuns {
     public void add(Run r) {
         list.add(r);
     }
+    
+    public Run get(int i){
+        return list.get(i);
+    }
 
     //load list of runs from a file
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -44,6 +48,10 @@ public class ListOfRuns {
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(list);
         oos.close();
+    }
+    
+    public int size(){
+        return list.size();
     }
     
 }

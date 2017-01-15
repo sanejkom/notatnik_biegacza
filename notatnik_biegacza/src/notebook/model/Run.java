@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -103,9 +104,16 @@ public class Run implements Serializable{
         ratio = distance / avgHR;
     }
     
+//    public String tekst(){
+//        String s = "" + String.format("%02d", date.getDate()) + "/" + String.format("%02d", date.getMonth()+1) + "/" + (date.getYear()+1900) + "\t" + distance + "\t" + timeMinutes + "m " + timeSeconds  + "s\t" + avgHR + "\t" + maxHR;
+//        return s;
+//    }
+    
     @Override
     public String toString(){
-        String s = "Data: " + date + "Dystans: " + distance + ", Czas: " + timeMinutes + "m " + timeSeconds  + "s, Średnie tętno: " + avgHR + ", Maks. tętno: " + maxHR;
+        //String s = "Data: " + String.format("%02d", date.getDate()) + "/" + String.format("%02d", date.getMonth()+1) + "/" + (date.getYear()+1900) + " Dystans: " + distance + ", Czas: " + timeMinutes + "m " + timeSeconds  + "s, Średnie tętno: " + avgHR + ", Maks. tętno: " + maxHR;
+        String s = "" + String.format("%02d", date.getDate()) + "/" + String.format("%02d", date.getMonth()+1) + "/" + (date.getYear()+1900) + "\t" + distance + "\t" + timeMinutes + "m " + timeSeconds  + "s\t" + avgHR + "\t" + maxHR;
         return s;
     }
+    
 }

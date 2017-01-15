@@ -43,6 +43,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         try {
             //load list of runs from file
             list.load();
+            updateList();
         } catch (IOException ex) {
             Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -63,8 +64,6 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        runsList = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
         ageTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -80,14 +79,12 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         displayStatisticsButton = new javax.swing.JButton();
         maxHeartRateTextField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        runsListTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Notatnik biegacza rekreacyjnego");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        runsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        runsList.setToolTipText("");
-        jScrollPane1.setViewportView(runsList);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setText("Lista biegów");
@@ -140,10 +137,20 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(progressTextArea);
 
         displayStatisticsButton.setText("Wyświetl statystyki");
+        displayStatisticsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                displayStatisticsButtonMouseReleased(evt);
+            }
+        });
 
         maxHeartRateTextField.setEditable(false);
 
         jLabel6.setText("Tętno maksymalne");
+
+        runsListTextArea.setEditable(false);
+        runsListTextArea.setColumns(20);
+        runsListTextArea.setRows(5);
+        jScrollPane3.setViewportView(runsListTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -152,9 +159,10 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(127, 127, 127)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 663, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(57, 57, 57)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addGroup(layout.createSequentialGroup()
@@ -175,14 +183,13 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(displayStatisticsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(addRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addComponent(jLabel1))
-                .addGap(36, 36, 36))
+                                .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING)))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
+                .addContainerGap(35, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -190,9 +197,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                         .addComponent(addRunButton)
                         .addGap(18, 18, 18)
                         .addComponent(editRunButton)
-                        .addGap(18, 18, 18)
+                        .addGap(20, 20, 20)
                         .addComponent(displayStatisticsButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(38, 38, 38)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -210,7 +217,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                             .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(changeInfoButton))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3))
                 .addGap(43, 43, 43))
         );
 
@@ -244,7 +251,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             new JLabel("Masa ciała"),
             weightEdit
         };
-        int result = JOptionPane.showConfirmDialog(null, inputs, "Edytuj informacje o biegaczu", JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Edytuj informacje o biegaczu", JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.YES_NO_OPTION) {
             System.out.println("You entered "
                     + ageEdit.getText() + ", "
@@ -283,7 +290,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             new JLabel("Najwyższy puls"), mHR,
             new JLabel("Data"), date
         };
-        int result = JOptionPane.showConfirmDialog(null, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.YES_NO_OPTION) {
             System.out.println("You entered "
                     + dist.getText() + ", "
@@ -310,12 +317,55 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             updateList();
         } else {
             System.out.println("User canceled / closed the dialog, result = " + result);
         }
     }//GEN-LAST:event_addRunButtonMouseReleased
+
+    private void displayStatisticsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_displayStatisticsButtonMouseReleased
+        //Statistics: total distance, avg distance, max distance, avgTime, totalTime, avgHR, avgMaxHR
+        double totalDistance = 0;
+        double avgDistance;
+        double maxDistance = 0;
+        int totalMinutes = 0;
+        double totalSeconds = 0;
+        int avgMinutes;
+        double avgSeconds;
+        double totalAvgHr = 0;
+        double avgMaxHR = 0;
+        
+        for (int i = 0; i < list.size(); i++) {
+            Run r = list.get(i);
+            totalDistance += r.getDistance();
+            maxDistance = Math.max(maxDistance, r.getDistance());
+            totalMinutes += r.getTimeMinutes();
+            totalSeconds += r.getTimeSeconds();
+            totalAvgHr += r.getAvgHR();
+            avgMaxHR += r.getMaxHR();
+        }
+        
+        avgMinutes = totalMinutes / list.size();
+        avgSeconds = totalSeconds / list.size();
+        avgDistance = totalDistance / list.size();
+        totalAvgHr /= list.size();
+        avgMaxHR /= list.size();
+        
+        totalMinutes += (int)totalSeconds/60;
+        totalSeconds %= 60;
+        
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Całkowity dystans: \n" + totalDistance + " m\n" + 
+                "Najdłuższy dystans: \n" + maxDistance + " m\n" +
+                "Średnia długość biegu: \n" + avgDistance + " m\n" +
+                "Łączny czas biegów: \n" + totalMinutes + ":" + totalSeconds + "\n" +
+                "Średni czas biegu: \n" + avgMinutes + ":" + avgSeconds + "\n" +
+                "Średnie tętno: \n" + totalAvgHr + "\n" +
+                "Średnia maksymalnego tętna: \n" + avgMaxHR + "\n",
+                "Statystyki",
+                JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_displayStatisticsButtonMouseReleased
 
     /**
      * @param args the command line arguments
@@ -343,8 +393,6 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(RunnersNotebookGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        //new setList();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -380,11 +428,36 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         weightTextField.setText(w);
         maxHeartRateTextField.setText(h);
     }
-    
-    public void updateList(){
+
+    public void updateList() {
         //displaying list of runs
-        runsList = new javax.swing.JList(list.list.toArray());
-        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+//        runsList = new javax.swing.JList(list.list.toArray());
+//        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+
+        //metoda 2
+        //javax.swing.DefaultListModel listModel = new javax.swing.DefaultListModel();
+//        listModel = new javax.swing.DefaultListModel();
+//        
+//        for (int i = 0; i < list.size(); i++) {
+//            Run r = list.get(i);
+//            listModel.addElement(r.toString());
+//            progressTextArea.append(r.toString() + "\n");
+//        }
+//
+//        runsList = new javax.swing.JList(listModel);
+//        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+//        runsList.setVisible(true);
+        //metoda 3
+        //runsList = new javax.swing.JList(list.list.toArray());
+        
+        
+        //mock for jList
+        runsListTextArea.removeAll();
+        runsListTextArea.append("Lp.\tData\tDystans\tCzas\tŚrednie tętno\tMaksymalne tętno\n");
+        for (int i = 0; i < list.size(); i++) {
+            Run r = list.get(i);
+            runsListTextArea.append((i+1) + ".\t" + r.toString() + "\n");
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -399,13 +472,14 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField maxHeartRateTextField;
     private javax.swing.JTextArea progressTextArea;
-    private javax.swing.JList runsList;
+    private javax.swing.JTextArea runsListTextArea;
     private javax.swing.JTextField weightTextField;
     // End of variables declaration//GEN-END:variables
     public User user;
     public ListOfRuns list;
+    javax.swing.DefaultListModel listModel;
 }
