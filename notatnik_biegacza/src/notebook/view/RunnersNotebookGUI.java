@@ -6,14 +6,15 @@
 package notebook.view;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import notebook.model.ListOfRuns;
+import notebook.model.Run;
 import notebook.model.User;
 
 /**
@@ -28,7 +29,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     public RunnersNotebookGUI() {
         initComponents();
 
-        ListOfRuns list = new ListOfRuns();
+        list = new ListOfRuns();
         user = new User();
         try {
             user.load();
@@ -48,9 +49,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
-
-        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+//        //displaying list of runs
+//        runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
+//        jScrollPane1 = new javax.swing.JScrollPane(runsList);
     }
 
     /**
@@ -121,6 +122,11 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel4.setText("Informacje o biegaczu");
 
         addRunButton.setText("Dodaj ostatni bieg");
+        addRunButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                addRunButtonMouseReleased(evt);
+            }
+        });
 
         editRunButton.setText("Edytuj wybrany bieg");
 
@@ -238,7 +244,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             new JLabel("Masa ciała"),
             weightEdit
         };
-        int result = JOptionPane.showConfirmDialog(null, inputs, "My custom dialog", JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, inputs, "Edytuj informacje o biegaczu", JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.YES_NO_OPTION) {
             System.out.println("You entered "
                     + ageEdit.getText() + ", "
@@ -261,6 +267,55 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             System.out.println("User canceled / closed the dialog, result = " + result);
         }
     }//GEN-LAST:event_changeInfoButtonMouseReleased
+
+    private void addRunButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addRunButtonMouseReleased
+        JTextField dist = new JTextField();
+        JTextField aHR = new JTextField();
+        JTextField mHR = new JTextField();
+        JTextField date = new JTextField();
+        JTextField timeMinutes = new JTextField();
+        JTextField timeSeconds = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Dystans"), dist,
+            new JLabel("Czas: minuty"), timeMinutes,
+            new JLabel("Czas: sekundy"), timeSeconds,
+            new JLabel("Średni puls"), aHR,
+            new JLabel("Najwyższy puls"), mHR,
+            new JLabel("Data"), date
+        };
+        int result = JOptionPane.showConfirmDialog(null, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + dist.getText() + ", "
+                    + timeMinutes.getText() + ", "
+                    + timeSeconds.getText() + ", "
+                    + aHR.getText() + ", "
+                    + mHR.getText() + ", "
+                    + date.getText());
+            double d = Double.parseDouble(dist.getText());
+            double a = Double.parseDouble(aHR.getText());
+            double m = Double.parseDouble(mHR.getText());
+            String da = date.getText();
+            int tm = Integer.parseInt(timeMinutes.getText());
+            double ts = Double.parseDouble(timeSeconds.getText());
+            //System.out.println(user.toString());
+            try {
+                Run newRun = new Run(d, a, m, da, tm, ts);
+                list.add(newRun);
+            } catch (ParseException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                list.save();
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            updateList();
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_addRunButtonMouseReleased
 
     /**
      * @param args the command line arguments
@@ -325,6 +380,12 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         weightTextField.setText(w);
         maxHeartRateTextField.setText(h);
     }
+    
+    public void updateList(){
+        //displaying list of runs
+        runsList = new javax.swing.JList(list.list.toArray());
+        jScrollPane1 = new javax.swing.JScrollPane(runsList);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addRunButton;
@@ -346,5 +407,5 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private javax.swing.JTextField weightTextField;
     // End of variables declaration//GEN-END:variables
     public User user;
-
+    public ListOfRuns list;
 }

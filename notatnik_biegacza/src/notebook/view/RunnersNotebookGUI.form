@@ -182,6 +182,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Dodaj ostatni bieg"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="addRunButtonMouseReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="editRunButton">
       <Properties>

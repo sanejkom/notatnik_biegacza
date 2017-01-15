@@ -22,16 +22,20 @@ public class Run implements Serializable{
     double avgHR;
     double maxHR;
     Date date;
-    Duration time;
+    //Duration time;
+    int timeMinutes;
+    double timeSeconds;
     double ratio;
     
     
-    public Run(double dis, double a, double m, String d, String t) throws ParseException{
+    public Run(double dis, double a, double m, String d, int tM, double tS) throws ParseException{
         distance = dis;
         avgHR = a;
         maxHR = m;
         date = new SimpleDateFormat("dd/MM/yyyy").parse(d);
-        time = Duration.parse(t);
+        //time = Duration.parse(t);
+        timeMinutes = tM;
+        timeSeconds = tS;
         ratio = dis / a; //consider changing to speed / avgHR
     }
     
@@ -51,8 +55,16 @@ public class Run implements Serializable{
         return date;
     }
     
-    public Duration getTime(){
-        return time;
+//    public Duration getTime(){
+//        return time;
+//    }
+    
+    public int getTimeMinutes(){
+        return timeMinutes;
+    }
+    
+    public double getTimeSeconds(){
+        return timeSeconds;
     }
     
     public void setDistance(double d){
@@ -75,8 +87,16 @@ public class Run implements Serializable{
         }
     }
     
-    public void setTime(String t){
-        time = Duration.parse(t);
+//    public void setTime(String t){
+//        time = Duration.parse(t);
+//    }
+    
+    public void setTimeMinutes(int t){
+        timeMinutes = t;
+    }
+    
+    public void setTimeSeconds(double t){
+        timeSeconds = t;
     }
     
     public void countRatio(){
@@ -85,7 +105,7 @@ public class Run implements Serializable{
     
     @Override
     public String toString(){
-        String s = "Data: " + date + "Dystans: " + distance + ", Czas: " + time + ", Średnie tętno: " + avgHR + ", Maks. tętno: " + maxHR;
+        String s = "Data: " + date + "Dystans: " + distance + ", Czas: " + timeMinutes + "m " + timeSeconds  + "s, Średnie tętno: " + avgHR + ", Maks. tętno: " + maxHR;
         return s;
     }
 }
