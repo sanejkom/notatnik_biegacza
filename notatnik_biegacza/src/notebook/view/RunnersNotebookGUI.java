@@ -6,6 +6,7 @@
 package notebook.view;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +50,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        updateMarker();
+        
 //        //displaying list of runs
 //        runsList = new javax.swing.JList<>(list.list.toArray(new String[0]));
 //        jScrollPane1 = new javax.swing.JScrollPane(runsList);
@@ -126,6 +129,11 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         });
 
         editRunButton.setText("Edytuj wybrany bieg");
+        editRunButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editRunButtonMouseClicked(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel5.setText("Marker postępów");
@@ -159,10 +167,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 663, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addGroup(layout.createSequentialGroup()
@@ -179,12 +186,13 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                                     .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(changeInfoButton)
                             .addComponent(jLabel5)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(displayStatisticsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(addRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING)))))
-                .addContainerGap(20, Short.MAX_VALUE))
+                                .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel1))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,6 +276,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
             updateUser();
+            updateMarker();
 //            ageTextField.setText(ageEdit.getText());
 //            weightTextField.setText(weightEdit.getText());
         } else {
@@ -283,12 +292,12 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         JTextField timeMinutes = new JTextField();
         JTextField timeSeconds = new JTextField();
         final JComponent[] inputs = new JComponent[]{
-            new JLabel("Dystans"), dist,
+            new JLabel("Dystans w metrach"), dist,
             new JLabel("Czas: minuty"), timeMinutes,
             new JLabel("Czas: sekundy"), timeSeconds,
             new JLabel("Średni puls"), aHR,
             new JLabel("Najwyższy puls"), mHR,
-            new JLabel("Data"), date
+            new JLabel("Data (dd/mm/rrrr)"), date
         };
         int result = JOptionPane.showConfirmDialog(this, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.YES_NO_OPTION) {
@@ -319,6 +328,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             }
 
             updateList();
+            updateMarker();
         } else {
             System.out.println("User canceled / closed the dialog, result = " + result);
         }
@@ -355,17 +365,74 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         totalMinutes += (int)totalSeconds/60;
         totalSeconds %= 60;
         
+        DecimalFormat df = new DecimalFormat("#.00");
+        
         javax.swing.JOptionPane.showMessageDialog(this,
-                "Całkowity dystans: \n" + totalDistance + " m\n" + 
-                "Najdłuższy dystans: \n" + maxDistance + " m\n" +
-                "Średnia długość biegu: \n" + avgDistance + " m\n" +
-                "Łączny czas biegów: \n" + totalMinutes + ":" + totalSeconds + "\n" +
-                "Średni czas biegu: \n" + avgMinutes + ":" + avgSeconds + "\n" +
-                "Średnie tętno: \n" + totalAvgHr + "\n" +
-                "Średnia maksymalnego tętna: \n" + avgMaxHR + "\n",
+                "Całkowity dystans: \n" + totalDistance + " m\n\n" + 
+                "Najdłuższy dystans: \n" + maxDistance + " m\n\n" +
+                "Średnia długość biegu: \n" + df.format(avgDistance) + " m\n\n" +
+                "Łączny czas biegów: \n" + totalMinutes + ":" + totalSeconds + "\n\n" +
+                "Średni czas biegu: \n" + avgMinutes + ":" + df.format(avgSeconds) + "\n\n" +
+                "Średnie tętno: \n" + df.format(totalAvgHr) + "\n\n" +
+                "Średnia maksymalnego tętna: \n" + df.format(avgMaxHR) + "\n\n",
                 "Statystyki",
                 JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_displayStatisticsButtonMouseReleased
+
+    private void editRunButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editRunButtonMouseClicked
+        JTextField ind = new JTextField();
+        JTextField dist = new JTextField();
+        JTextField aHR = new JTextField();
+        JTextField mHR = new JTextField();
+        JTextField date = new JTextField();
+        JTextField timeMinutes = new JTextField();
+        JTextField timeSeconds = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Numer biegu"), ind,
+            new JLabel("Dystans w metrach"), dist,
+            new JLabel("Czas: minuty"), timeMinutes,
+            new JLabel("Czas: sekundy"), timeSeconds,
+            new JLabel("Średni puls"), aHR,
+            new JLabel("Najwyższy puls"), mHR,
+            new JLabel("Data (dd/mm/rrrr)"), date
+        };
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Edytuj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + ind.getText() + ", "
+                    + dist.getText() + ", "
+                    + timeMinutes.getText() + ", "
+                    + timeSeconds.getText() + ", "
+                    + aHR.getText() + ", "
+                    + mHR.getText() + ", "
+                    + date.getText());
+            
+            int i = Integer.parseInt(ind.getText());
+            double d = Double.parseDouble(dist.getText());
+            double a = Double.parseDouble(aHR.getText());
+            double m = Double.parseDouble(mHR.getText());
+            String da = date.getText();
+            int tm = Integer.parseInt(timeMinutes.getText());
+            double ts = Double.parseDouble(timeSeconds.getText());
+            //System.out.println(user.toString());
+            try {
+                Run newRun = new Run(d, a, m, da, tm, ts);
+                list.set(i-1, newRun);
+            } catch (ParseException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                list.save();
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            updateList();
+            updateMarker();
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_editRunButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -420,9 +487,11 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
 //        
 //    }
     public void updateUser() {
+        DecimalFormat df = new DecimalFormat("#.00");
+        
         String a = "" + user.getAge();
         String w = "" + user.getWeight();
-        String h = "" + user.getMaxHR();
+        String h = "" + df.format(user.getMaxHR());
 
         ageTextField.setText(a);
         weightTextField.setText(w);
@@ -453,10 +522,35 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         
         //mock for jList
         runsListTextArea.removeAll();
+        runsListTextArea.setText("");
         runsListTextArea.append("Lp.\tData\tDystans\tCzas\tŚrednie tętno\tMaksymalne tętno\n");
         for (int i = 0; i < list.size(); i++) {
             Run r = list.get(i);
             runsListTextArea.append((i+1) + ".\t" + r.toString() + "\n");
+        }
+    }
+    
+    public void updateMarker(){
+        int i = list.size()-1;
+        if(i < 2){
+            progressTextArea.setText("Za mało biegów do wyznaczenia progresu");
+        } else {
+            double a = list.get(i).getRatio();
+            double b = list.get(i-1).getRatio();
+            double c = list.get(i-2).getRatio();
+            
+            if((a > b) && (b > c)){
+                progressTextArea.setText("Progresja treningu");
+            } else if((a < b) && (b < c)){
+                progressTextArea.setText("Odnotowano możliwość przetrenowania!\nNależy zmniejszyć prędkość biegu o 25%");
+            } else {
+                progressTextArea.setText("Brak widocznej progresji treningu");
+            }
+            
+        }
+        
+        if(list.get(i).getMaxHR() > user.getMaxHR()){
+            progressTextArea.append("\n\nPRZEKROCZONO WARTOŚĆ PULSU MAKSYMALNEGO!");
         }
     }
 

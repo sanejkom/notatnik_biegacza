@@ -37,7 +37,7 @@ public class Run implements Serializable{
         //time = Duration.parse(t);
         timeMinutes = tM;
         timeSeconds = tS;
-        ratio = dis / a; //consider changing to speed / avgHR
+        ratio = dis / (a * tM); //consider changing to speed / avgHR
     }
     
     public double getDistance(){
@@ -66,6 +66,10 @@ public class Run implements Serializable{
     
     public double getTimeSeconds(){
         return timeSeconds;
+    }
+    
+    public double getRatio(){
+        return ratio;
     }
     
     public void setDistance(double d){

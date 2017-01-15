@@ -33,6 +33,10 @@ public class ListOfRuns {
     public Run get(int i){
         return list.get(i);
     }
+    
+    public void set(int i, Run r){
+        list.set(i, r);
+    }
 
     //load list of runs from a file
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException {
