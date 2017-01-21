@@ -31,6 +31,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         initComponents();
 
         list = new ListOfRuns();
+        plannedList = new ListOfRuns();
         user = new User();
         try {
             user.load();
@@ -43,8 +44,10 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
 
         try {
             //load list of runs from file
-            list.load();
+            list.load("list.tmp");
+            plannedList.load("plan.tmp");
             updateList();
+            updatePlannedlist();
         } catch (IOException ex) {
             Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -84,6 +87,12 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         runsListTextArea = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        plannedRunsListTextArea = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        planRunButton = new javax.swing.JButton();
+        editPlannedRunButton = new javax.swing.JButton();
+        deletePlannedRunButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Notatnik biegacza rekreacyjnego");
@@ -160,17 +169,53 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         runsListTextArea.setRows(5);
         jScrollPane3.setViewportView(runsListTextArea);
 
+        plannedRunsListTextArea.setEditable(false);
+        plannedRunsListTextArea.setColumns(20);
+        plannedRunsListTextArea.setRows(5);
+        jScrollPane1.setViewportView(plannedRunsListTextArea);
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel7.setText("Plan biegów");
+
+        planRunButton.setText("Zaplanuj bieg");
+        planRunButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                planRunButtonMouseClicked(evt);
+            }
+        });
+
+        editPlannedRunButton.setText("Edytuj plan biegu");
+        editPlannedRunButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editPlannedRunButtonMouseClicked(evt);
+            }
+        });
+
+        deletePlannedRunButton.setText("Usuń plan biegu");
+        deletePlannedRunButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deletePlannedRunButtonMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45)
+                        .addComponent(jLabel1)
+                        .addGap(880, 880, 880))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane3)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel4)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,27 +231,38 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                                     .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(changeInfoButton)
                             .addComponent(jLabel5)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(displayStatisticsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(addRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel1))
-                .addContainerGap(34, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(displayStatisticsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(editRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(addRunButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(planRunButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(editPlannedRunButton, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                                    .addComponent(deletePlannedRunButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(39, 39, 39))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(35, Short.MAX_VALUE)
+                .addContainerGap(29, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addRunButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addRunButton)
+                            .addComponent(planRunButton))
                         .addGap(18, 18, 18)
-                        .addComponent(editRunButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(editRunButton)
+                            .addComponent(editPlannedRunButton))
                         .addGap(20, 20, 20)
-                        .addComponent(displayStatisticsButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(displayStatisticsButton)
+                            .addComponent(deletePlannedRunButton))
                         .addGap(38, 38, 38)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -222,11 +278,14 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(weightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(changeInfoButton))
-                    .addComponent(jScrollPane3))
-                .addGap(43, 43, 43))
+                            .addComponent(maxHeartRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(changeInfoButton)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23))
         );
 
         pack();
@@ -318,16 +377,18 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             try {
                 Run newRun = new Run(d, a, m, da, tm, ts);
                 list.add(newRun);
+                plannedList.updatePlan(newRun.getDate());
             } catch (ParseException ex) {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                list.save();
+                list.save("list.tmp");
             } catch (IOException ex) {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             updateList();
+            updatePlannedlist();
             updateMarker();
         } else {
             System.out.println("User canceled / closed the dialog, result = " + result);
@@ -422,7 +483,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                list.save();
+                list.save("list.tmp");
             } catch (IOException ex) {
                 Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -433,6 +494,119 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             System.out.println("User canceled / closed the dialog, result = " + result);
         }
     }//GEN-LAST:event_editRunButtonMouseClicked
+
+    private void planRunButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_planRunButtonMouseClicked
+        JTextField dist = new JTextField();
+        //JTextField aHR = new JTextField();
+        //JTextField mHR = new JTextField();
+        JTextField date = new JTextField();
+        //JTextField timeMinutes = new JTextField();
+        //JTextField timeSeconds = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Dystans w metrach"), dist,
+            //new JLabel("Czas: minuty"), timeMinutes,
+            //new JLabel("Czas: sekundy"), timeSeconds,
+            //new JLabel("Średni puls"), aHR,
+            //new JLabel("Najwyższy puls"), mHR,
+            new JLabel("Data (dd/mm/rrrr)"), date
+        };
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + dist.getText() + ", "
+                    //+ timeMinutes.getText() + ", "
+                    //+ timeSeconds.getText() + ", "
+                    //+ aHR.getText() + ", "
+//                    + mHR.getText() + ", "
+                    + date.getText());
+            double d = Double.parseDouble(dist.getText());
+//            double a = Double.parseDouble(aHR.getText());
+//            double m = Double.parseDouble(mHR.getText());
+            String da = date.getText();
+//            int tm = Integer.parseInt(timeMinutes.getText());
+//            double ts = Double.parseDouble(timeSeconds.getText());
+            //System.out.println(user.toString());
+            try {
+                Run newRun = new Run(d, da);
+                plannedList.add(newRun);
+            } catch (ParseException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                plannedList.save("plan.tmp");
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            updatePlannedlist();
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_planRunButtonMouseClicked
+
+    private void editPlannedRunButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editPlannedRunButtonMouseClicked
+        JTextField ind = new JTextField();
+        JTextField dist = new JTextField();
+        JTextField date = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Numer biegu"), ind,
+            new JLabel("Dystans w metrach"), dist,
+            new JLabel("Data (dd/mm/rrrr)"), date
+        };
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Podaj informacje o biegu", JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + ind.getText() + ", "
+                    + dist.getText() + ", "
+                    + date.getText());
+            
+            int i = Integer.parseInt(ind.getText());
+            double d = Double.parseDouble(dist.getText());
+            String da = date.getText();
+            try {
+                Run newRun = new Run(d, da);
+                plannedList.set(i-1, newRun);
+            } catch (ParseException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                plannedList.save("plan.tmp");
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            updatePlannedlist();
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_editPlannedRunButtonMouseClicked
+
+    private void deletePlannedRunButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deletePlannedRunButtonMouseClicked
+        JTextField ind = new JTextField();
+        final JComponent[] inputs = new JComponent[]{
+            new JLabel("Numer planu do usunięcia"), ind
+        };
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Usuń planowany bieg", JOptionPane.PLAIN_MESSAGE);
+        
+        if (result == JOptionPane.YES_NO_OPTION) {
+            System.out.println("You entered "
+                    + ind.getText());
+            
+            int i = Integer.parseInt(ind.getText());
+            
+            plannedList.remove(i-1);
+            
+            try {
+                plannedList.save("plan.tmp");
+            } catch (IOException ex) {
+                Logger.getLogger(RunnersNotebookGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            updatePlannedlist();
+        } else {
+            System.out.println("User canceled / closed the dialog, result = " + result);
+        }
+    }//GEN-LAST:event_deletePlannedRunButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -530,6 +704,16 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
         }
     }
     
+    public void updatePlannedlist(){
+        plannedRunsListTextArea.removeAll();
+        plannedRunsListTextArea.setText("");
+        plannedRunsListTextArea.append("Lp.\tData\tDystans\n");
+        for (int i = 0; i < plannedList.size(); i++) {
+            Run r = plannedList.get(i);
+            plannedRunsListTextArea.append((i+1) + ".\t" + String.format("%02d", r.getDate().getDate()) + "/" + String.format("%02d", r.getDate().getMonth()+1) + "/" + (r.getDate().getYear()+1900) + "\t" + r.getDistance() + "\n");
+        }
+    }
+    
     public void updateMarker(){
         int i = list.size()-1;
         if(i < 2){
@@ -549,7 +733,7 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
             
         }
         
-        if(list.get(i).getMaxHR() > user.getMaxHR()){
+        if(i > 0 && list.get(i).getMaxHR() > user.getMaxHR()){
             progressTextArea.append("\n\nPRZEKROCZONO WARTOŚĆ PULSU MAKSYMALNEGO!");
         }
     }
@@ -558,7 +742,9 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private javax.swing.JButton addRunButton;
     private javax.swing.JTextField ageTextField;
     private javax.swing.JButton changeInfoButton;
+    private javax.swing.JButton deletePlannedRunButton;
     private javax.swing.JButton displayStatisticsButton;
+    private javax.swing.JButton editPlannedRunButton;
     private javax.swing.JButton editRunButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -566,14 +752,19 @@ public class RunnersNotebookGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField maxHeartRateTextField;
+    private javax.swing.JButton planRunButton;
+    private javax.swing.JTextArea plannedRunsListTextArea;
     private javax.swing.JTextArea progressTextArea;
     private javax.swing.JTextArea runsListTextArea;
     private javax.swing.JTextField weightTextField;
     // End of variables declaration//GEN-END:variables
     public User user;
     public ListOfRuns list;
+    public ListOfRuns plannedList;
     javax.swing.DefaultListModel listModel;
 }

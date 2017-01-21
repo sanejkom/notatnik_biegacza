@@ -40,6 +40,11 @@ public class Run implements Serializable{
         ratio = dis / (a * tM); //consider changing to speed / avgHR
     }
     
+    public Run(double dis, String d) throws ParseException{
+        distance = dis;
+        date = new SimpleDateFormat("dd/MM/yyyy").parse(d);
+    }
+    
     public double getDistance(){
         return distance;
     }
